@@ -100,7 +100,6 @@ class SeederController extends Controller
 
         if ($name) {
             $func = $function ?? 'run';
-
             $seederClasses = [
                 $name,
                 "{$name}TableSeeder",
@@ -110,12 +109,15 @@ class SeederController extends Controller
                 "{$this->tableSeederNamespace}\\{$name}TableSeeder",
             ];
 
+            $count = 0;
             foreach ($seederClasses as $seederClass) {
                 if ($seeder = $this->getClass($seederClass)) {
                     $seeder->{$func}();
+                    $count++;
                     break;
                 }
             }
+            $this->printError("Class {$name} not exists.\n", $count === 0);
         } else if (($defaultSeeder = $this->getDefaultSeeder()) !== null) {
             $defaultSeeder->run();
         }
@@ -191,6 +193,8 @@ class SeederController extends Controller
 
             $this->model = $this->getClass($file);
             if ($this->model === null) {
+                $this->printError("Class {$file} not exists.\n");
+
                 return ExitCode::OK;
             }
         }
@@ -218,17 +222,27 @@ class SeederController extends Controller
 
     /**
      * @param string $path
-     * @param string $eol
      * @return \yii\db\ActiveRecord|null
      */
-    protected function getClass($path, $eol = PHP_EOL)
+    protected function getClass($path)
     {
         if (class_exists($path)) {
             return new $path;
         }
 
-        $this->stdout("Class {$path} not exists. {$eol}");
         return null;
+    }
+
+    /**
+     * @param string $message
+     * @param bool $print
+     * @return void
+     */
+    protected function printError($message, $print = true)
+    {
+        if ($print) {
+            $this->stdout($message, Console::FG_RED);
+        }
     }
 
     /**
@@ -251,10 +265,10 @@ class SeederController extends Controller
             $table  = array_shift($foreignKey);
             $column = array_keys($foreignKey)[0];
 
-            $errorMsg = "Foreign Key for '$column' column will be ignored and a common column will be generated.\n";
-
-            $model = $this->getClass($modelNamespace . '\\' . Inflector::camelize($table), $errorMsg);
+            $model = $this->getClass(($class = $modelNamespace . '\\' . Inflector::camelize($table)));
             $foreignKeys[$column] = $model;
+
+            $this->printError("Class {$class} not exists. Foreign Key for '$column' column will be ignored and a common column will be generated.\n", $model === null);
         }
 
         foreach ($columns as $column => $data) {
