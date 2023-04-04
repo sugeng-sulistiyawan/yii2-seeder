@@ -20,7 +20,6 @@ class Seeder extends TableSeeder
      */
     public function run()
     {
-        // TableSeeder::create()->run();
+        // ModelTableSeeder::create()->run();
     }
-
 }

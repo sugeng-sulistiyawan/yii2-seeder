@@ -102,8 +102,10 @@ class SeederController extends Controller
             $seederClasses = [
                 $name,
                 "{$name}TableSeeder",
-                "{$this->tableSeederNamespace}\\{$name}TableSeeder",
+                "{$this->seederNamespace}\\{$name}",
+                "{$this->seederNamespace}\\{$name}TableSeeder",
                 "{$this->tableSeederNamespace}\\{$name}",
+                "{$this->tableSeederNamespace}\\{$name}TableSeeder",
             ];
 
             foreach ($seederClasses as $seederClass) {
@@ -137,6 +139,8 @@ class SeederController extends Controller
      * ```shell
      * yii seeder/create model-name
      * ```
+     * 
+     * @see https://www.yiiframework.com/doc/api/2.0/yii-helpers-inflector#camelize()-detail
      *
      * For example:
      *
@@ -165,13 +169,15 @@ class SeederController extends Controller
      */
     public function actionCreate($modelName)
     {
-        if (!class_exists($modelName)) {
+        $modelName = str_replace('/', '\\', $modelName);
+
+        if (class_exists($modelName)) {
             $this->model = $this->getClass($modelName);
         } else {
             $modelNamespace = $this->modelNamespace;
 
-            if (strpos($modelName, '/')) {
-                $explode         = explode('/', $modelName);
+            if (strpos($modelName, '\\')) {
+                $explode         = explode('\\', $modelName);
                 $modelName       = array_pop($explode);
                 $modelNamespace .= '\\' . implode('\\', $explode);
 
@@ -195,8 +201,9 @@ class SeederController extends Controller
             return ExitCode::OK;
         }
 
-        $className = StringHelper::basename($this->model::class) . 'TableSeeder';
-        $file      = "{$this->tablesPath}/{$className}.php";
+        $modelClass = $this->model::class;
+        $className  = StringHelper::basename($modelClass) . 'TableSeeder';
+        $file       = "{$this->tablesPath}/{$className}.php";
         if ($this->confirm("Create new seeder '{$file}'?")) {
             $content = $this->renderFile($this->templateTableFile, [
                 'className' => $className,
@@ -223,7 +230,6 @@ class SeederController extends Controller
     protected function getClass($path, $eol = PHP_EOL)
     {
         if (class_exists($path)) {
-            $this->stdout("Use {$path} class. {$eol}");
             return new $path;
         }
 
@@ -234,10 +240,13 @@ class SeederController extends Controller
     /**
      * Generate fields for views template
      *
-     * @return \stdClass
+     * @return object
      */
     public function generateFields()
     {
+        $modelClass     = $this->model::class;
+        $modelNamespace = str_replace('/', '\\', StringHelper::dirname($modelClass));
+
         $schema      = $this->model->tableSchema;
         $columns     = $schema->columns;
         $foreignKeys = $schema->foreignKeys;
@@ -250,7 +259,7 @@ class SeederController extends Controller
 
             $errorMsg = "Foreign Key for '$column' column will be ignored and a common column will be generated.\n";
 
-            $model = $this->getClass($this->modelNamespace . '\\' . Inflector::camelize($table), $errorMsg);
+            $model = $this->getClass($modelNamespace . '\\' . Inflector::camelize($table), $errorMsg);
             $foreignKeys[$column] = $model;
         }
 
@@ -331,7 +340,7 @@ class SeederController extends Controller
                 }
             }
 
-            $fields[$column] = (object)[
+            $fields[$column] = (object) [
                 'faker'        => $faker,
                 'foreign'      => $foreign,
                 'ref_table_id' => $ref_table_id
