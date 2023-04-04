@@ -115,8 +115,8 @@ class SeederController extends Controller
                     break;
                 }
             }
-        } else if (($defaultSeeder = $this->getDefaultSeeder()) !== null) {
-            $defaultSeeder->run();
+        } else if ($this->getDefaultSeeder() !== null) {
+            $this->getDefaultSeeder()->run();
         }
 
         return ExitCode::OK;
@@ -270,8 +270,7 @@ class SeederController extends Controller
                 continue;
             }
 
-            $foreign = $ref_table_id = $faker = null;
-
+            $foreign = $ref_table_id = null;
             if (isset($foreignKeys[$column])) {
                 $foreign      = $foreignKeys[$column];
                 $ref_table_id = $foreign->tableSchema->primaryKey[0];
@@ -300,6 +299,7 @@ class SeederController extends Controller
      */
     protected function generateFakerName(ColumnSchema $data)
     {
+        $faker = "";
         switch ($data->name) {
             case 'full_name':
             case 'name':
@@ -340,6 +340,7 @@ class SeederController extends Controller
      */
     protected function generateFakerType(ColumnSchema $data)
     {
+        $faker = "";
         switch ($data->type) {
             case 'integer':
             case 'smallint':
@@ -369,6 +370,7 @@ class SeederController extends Controller
                 break;
             default:
                 $faker = 'text';
+                break;
         }
 
         return $faker;
@@ -400,7 +402,6 @@ class SeederController extends Controller
             return new $defaultSeederClass;
         }
 
-        $this->stdout("\nClass {$defaultSeederClass} must instance of `\diecoding\seeder\TableSeeder`.\n");
         return null;
     }
 }
