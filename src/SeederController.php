@@ -115,8 +115,8 @@ class SeederController extends Controller
                     break;
                 }
             }
-        } else if ($this->getDefaultSeeder() !== null) {
-            $this->getDefaultSeeder()->run();
+        } else if (($defaultSeeder = $this->getDefaultSeeder()) !== null) {
+            $defaultSeeder->run();
         }
 
         return ExitCode::OK;
@@ -397,9 +397,9 @@ class SeederController extends Controller
             file_put_contents($defaultSeederFile, $content, LOCK_EX);
         }
 
-        if ($defaultSeederClass instanceof TableSeeder) {
-            /** @var TableSeeder $defaultSeederClass */
-            return new $defaultSeederClass;
+        if (($seederClass = new $defaultSeederClass) instanceof TableSeeder) {
+            /** @var TableSeeder $seederClass */
+            return $seederClass;
         }
 
         return null;
