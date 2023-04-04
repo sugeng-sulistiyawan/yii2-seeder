@@ -109,16 +109,6 @@ abstract class TableSeeder extends Migration
      */
     public function insert($table, $columns)
     {
-        $columnNames = $this->db->getTableSchema($table)->columnNames;
-
-        if (!array_key_exists('created_at', $columns) && in_array('created_at', $columnNames, true)) {
-            $columns['created_at'] = $this->createdAt;
-        }
-
-        if (!array_key_exists('updated_at', $columns) && in_array('updated_at', $columnNames, true)) {
-            $columns['updated_at'] = $this->updatedAt;
-        }
-
         $this->insertedColumns[$table] = ArrayHelper::merge(
             array_keys($columns),
             isset($this->insertedColumns[$table]) ? $this->insertedColumns[$table] : []
@@ -136,22 +126,6 @@ abstract class TableSeeder extends Migration
      */
     public function batchInsert($table, $columns, $rows)
     {
-        $columnNames = $this->db->getTableSchema($table)->columnNames;
-
-        if (!in_array('created_at', $columns, true) && in_array('created_at', $columnNames, true)) {
-            $columns[] = 'created_at';
-            for ($i = 0, $max = count($rows); $i < $max; $i++) {
-                $rows[$i][] = $this->createdAt;
-            }
-        }
-
-        if (!in_array('updated_at', $columns, true) && in_array('updated_at', $columnNames, true)) {
-            $columns[] = 'updated_at';
-            for ($i = 0, $max = count($rows); $i < $max; $i++) {
-                $rows[$i][] = $this->updatedAt;
-            }
-        }
-
         $this->insertedColumns[$table] = ArrayHelper::merge(
             $columns,
             isset($this->insertedColumns[$table]) ? $this->insertedColumns[$table] : []
