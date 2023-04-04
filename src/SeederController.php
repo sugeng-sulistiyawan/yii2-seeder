@@ -6,6 +6,7 @@ use Yii;
 use yii\console\Controller;
 use yii\console\ExitCode;
 use yii\db\ColumnSchema;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Console;
 use yii\helpers\FileHelper;
 use yii\helpers\Inflector;
@@ -175,30 +176,23 @@ class SeederController extends Controller
         $this->model = $this->getClass($modelName);
         if ($this->model === null) {
             $modelNamespace = $this->modelNamespace;
-
+            $file           = "{$modelNamespace}\\{$modelName}";
             if (strpos($modelName, '\\')) {
                 $explode         = explode('\\', $modelName);
                 $modelName       = array_pop($explode);
                 $modelNamespace .= '\\' . implode('\\', $explode);
 
                 $file = "{$modelNamespace}\\{$modelName}";
-                if (!class_exists($file)) {
-                    $modelName = Inflector::camelize($modelName);
-                    $file      = "{$modelNamespace}\\{$modelName}";
-                }
-            } else {
-                $file = "{$modelNamespace}\\{$modelName}";
-                if (!class_exists($file)) {
-                    $modelName = Inflector::camelize($modelName);
-                    $file      = "{$modelNamespace}\\{$modelName}";
-                }
+            }
+            if (!class_exists($file)) {
+                $modelName = Inflector::camelize($modelName);
+                $file      = "{$modelNamespace}\\{$modelName}";
             }
 
             $this->model = $this->getClass($file);
-        }
-
-        if ($this->model === null) {
-            return ExitCode::OK;
+            if ($this->model === null) {
+                return ExitCode::OK;
+            }
         }
 
         $modelClass = $this->model::class;
@@ -275,9 +269,9 @@ class SeederController extends Controller
                 $ref_table_id = $foreign->tableSchema->primaryKey[0];
             }
 
-            $faker = $this->generateFakerName($data);
-            if (empty($faker)) {
-                $faker = $this->generateFakerType($data);
+            $faker = $this->generateFakerField($data->name) ?? $this->generateFakerField($data->type);
+            if ($data->dbType === 'tinyint(1)') {
+                $faker = 'boolean';
             }
 
             $fields[$column] = (object) [
@@ -293,86 +287,38 @@ class SeederController extends Controller
     /**
      * Generate Faker Field Name
      *
-     * @param ColumnSchema $data
+     * @param string $key
      * @return string
      */
-    protected function generateFakerName(ColumnSchema $data)
+    protected function generateFakerField($key)
     {
-        $faker = "";
-        switch ($data->name) {
-            case 'full_name':
-            case 'name':
-                $faker = 'name';
-                break;
-            case 'short_name':
-            case 'first_name':
-            case 'nickname':
-                $faker = 'firstName';
-                break;
-            case 'last_name':
-                $faker = 'lastName';
-                break;
-            case 'description':
-                $faker = 'realText()';
-                break;
-            case 'company':
-            case 'business_name':
-                $faker = 'company';
-                break;
-            case 'email':
-                $faker = 'email';
-                break;
-            case 'phone':
-            case 'hp':
-                $faker = 'phoneNumber';
-                break;
-        }
+        $faker = [
+            'full_name'     => 'name',
+            'name'          => 'name',
+            'short_name'    => 'firstName',
+            'first_name'    => 'firstName',
+            'nickname'      => 'firstName',
+            'last_name'     => 'lastName',
+            'description'   => 'realText()',
+            'company'       => 'company',
+            'business_name' => 'company',
+            'email'         => 'email',
+            'phone'         => 'phoneNumber',
+            'hp'            => 'phoneNumber',
+            'integer'       => 'numberBetween(0, 10)',
+            'smallint'      => 'numberBetween(0, 10)',
+            'tinyint'       => 'numberBetween(0, 10)',
+            'mediumint'     => 'numberBetween(0, 10)',
+            'int'           => 'numberBetween(0, 10)',
+            'bigint'        => 'numberBetween(0, 10)',
+            'date'          => 'date()',
+            'datetime'      => 'dateTime()',
+            'timestamp'     => 'dateTime()',
+            'year'          => 'year()',
+            'time'          => 'time()',
+        ];
 
-        return $faker;
-    }
-
-    /**
-     * Generate Faker Field Type
-     *
-     * @param ColumnSchema $data
-     * @return string
-     */
-    protected function generateFakerType(ColumnSchema $data)
-    {
-        $faker = "";
-        switch ($data->type) {
-            case 'integer':
-            case 'smallint':
-            case 'tinyint':
-                $faker = 'numberBetween(0, 10)';
-                if ($data->dbType === 'tinyint(1)') {
-                    $faker = 'boolean';
-                    break;
-                }
-            case 'mediumint':
-            case 'int':
-            case 'bigint':
-                $faker = 'numberBetween(0, 10)';
-                break;
-            case 'date':
-                $faker = 'date()';
-                break;
-            case 'datetime':
-            case 'timestamp':
-                $faker = 'dateTime()';
-                break;
-            case 'year':
-                $faker = 'year()';
-                break;
-            case 'time':
-                $faker = 'time()';
-                break;
-            default:
-                $faker = 'text';
-                break;
-        }
-
-        return $faker;
+        return ArrayHelper::getValue($faker, $key, 'text');
     }
 
     /**
