@@ -172,9 +172,8 @@ class SeederController extends Controller
     {
         $modelName = str_replace('/', '\\', $modelName);
 
-        if (class_exists($modelName)) {
-            $this->model = $this->getClass($modelName);
-        } else {
+        $this->model = $this->getClass($modelName);
+        if ($this->model === null) {
             $modelNamespace = $this->modelNamespace;
 
             if (strpos($modelName, '\\')) {
