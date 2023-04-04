@@ -211,11 +211,16 @@ public $locale = 'en_US';
 At the end of every Seeder, if any columns have been forgotten, a message with all the missing columns will appear
 
 ```shell
-    > #################### MISSING COLUMNS ###################
-    > # TABLE: {{%user}}                                     #
-    > #    name => varchar(255)                              #
-    > #    age => int(2)                                     #
-    > ########################################################
+    > ########################### MISSING COLUMNS ############################
+    > #                                                                      #
+    > #    TABLE: {{%user}}                                                  #
+    > # -------------------------------------------------------------------- #
+    > #    - full_name => varchar(1)                                         #
+    > #    - birth_date => date                                              #
+    > #    - thumbnail => varchar(64)                                        #
+    > # -------------------------------------------------------------------- #
+    > #                                                                      #
+    > ########################################################################
 ```
 
 ### Seeder

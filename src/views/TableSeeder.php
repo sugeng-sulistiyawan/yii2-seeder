@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This view is used by diecoding\seeder\SeederController.php.
  *
@@ -18,34 +19,40 @@ if (!empty($namespace)) {
     echo "\nnamespace {$namespace};\n";
 }
 
-$modelClass        = $model::class;
-$modelName         = StringHelper::basename($modelClass);
-$varsPre           = [];
-$check[$modelName] = [$modelName];
+$modelClass  = $model::class;
+$modelName   = StringHelper::basename($modelClass);
+$foreignVars = [];
+
+$checkClass[$modelClass]    = $modelClass;
+$checkClassName[$modelName] = [$modelClass];
 
 ?>
 
 use diecoding\seeder\TableSeeder;
 <?= "use {$modelClass};\n" ?>
-<?php 
+<?php
 $i = 0;
 foreach ($fields as $column => $properties) {
     if ($foreign = $properties->foreign) {
-        $_class     = $foreign::class;
-        $_className = StringHelper::basename($_class);
-        if (isset($check[$_className])) {
-            $_className = $_className . count($check[$_className]);
+        $foreignClass     = $foreign::class;
+        $foreignClassName = StringHelper::basename($foreignClass);
+        if (!isset($checkClass[$foreignClass])) {
+            if (isset($checkClassName[$foreignClassName])) {
+                $foreignClassName .= count($checkClassName[$foreignClassName]);
+                $checkClassName[$foreignClassName][] = $foreignClass;
 
-            echo "use {$_class} as {$_className};\n";
-        } else {
-            echo "use {$_class};\n";
+                echo "use {$foreignClass} as {$foreignClassName};\n";
+            } else {
+                $checkClassName[$foreignClassName] = [$foreignClass];
+
+                echo "use {$foreignClass};\n";
+            }
+            $checkClass[$foreignClass] = $foreignClass;
         }
 
-        $check[$_className]               = [$_class];
-        $ref_table_id                     = $properties->ref_table_id;
-        $space                            = $i++ === 0 ? '' : "\t\t";
-        $vars[$ref_table_id . $column]    = '$' . Inflector::variablize($_className);
-        $varsPre[$ref_table_id . $column] = "{$space}{$vars[$ref_table_id . $column]} = {$_className}::find()->all();\n";
+        $ref_table_id                   = $properties->ref_table_id;
+        $vars[$ref_table_id . $column]  = '$' . Inflector::variablize($foreignClassName);
+        $foreignVars[$foreignClassName] = "{$vars[$ref_table_id .$column]} = {$foreignClassName}::find()->all();\n";
     }
 } ?>
 
@@ -60,24 +67,24 @@ class <?= $className ?> extends TableSeeder
     /**
      * {@inheritdoc}
      */
-    function run()
+    public function run()
     {
-        <?= implode("", $varsPre) ?>
+        <?= implode("        ", $foreignVars) ?>
 
         $count = 100;
-        for ($i = 0; $i < $count; $i++) { 
+        for ($i = 0; $i < $count; $i++) {
             $this->insert(<?= $modelName ?>::tableName(), [
                 <?php
-                    $i = 0;
-                    foreach ($fields as $column => $properties) {
-                        $ref_table_id = $properties->ref_table_id;
-                        $space        = $i++ === 0 ? '' : "\t\t\t\t";
-                        if (isset($vars[$ref_table_id . $column])) {
-                            echo $space . "'$column' => \$this->faker->randomElement({$vars[$ref_table_id . $column]})->{$properties->ref_table_id},\n";
-                        } else {
-                            echo $space . "'$column' => \$this->faker->{$properties->faker},\n";
-                        }
-                    } 
+                $i = 0;
+                foreach ($fields as $column => $properties) {
+                    $ref_table_id = $properties->ref_table_id;
+                    $space        = $i++ === 0 ? '' : "\t\t\t\t";
+                    if (isset($vars[$ref_table_id . $column])) {
+                        echo $space . "'$column' => \$this->faker->randomElement({$vars[$ref_table_id .$column]})->{$properties->ref_table_id},\n";
+                    } else {
+                        echo $space . "'$column' => \$this->faker->{$properties->faker},\n";
+                    }
+                }
                 ?>
             ]);
         }

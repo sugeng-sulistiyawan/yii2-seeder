@@ -157,14 +157,18 @@ abstract class TableSeeder extends Migration
         }
 
         if (count($missingColumns)) {
-            echo "    > " . str_pad(' MISSING COLUMNS ', 70, '#', STR_PAD_BOTH) . "\n";
+            echo "    > #" . str_pad(' MISSING COLUMNS ', 70, '#', STR_PAD_BOTH) . "#\n";
             foreach ($missingColumns as $table => $columns) {
-                echo "    > " . str_pad("# TABLE: $table", 69, ' ') . "#\n";
+                echo "    > #" . str_pad('', 70, ' ') . "#\n";
+                echo "    > #" . str_pad("    TABLE: {$table}", 70, ' ') . "#\n";
+                echo "    > # " . str_pad('', 68, '-') . " #\n";
                 foreach ($columns as [$tableColumn, $type]) {
-                    echo "    > " . str_pad("#    $tableColumn => $type", 69, ' ') . "#\n";
+                    echo "    > #" . str_pad("    - $tableColumn => $type", 70, ' ') . "#\n";
                 }
+                echo "    > # " . str_pad('', 68, '-') . " #\n";
+                echo "    > #" . str_pad('', 70, ' ') . "#\n";
             }
-            echo "    > " . str_pad('', 70, '#') . "\n";
+            echo "    > #" . str_pad('', 70, '#') . "#\n";
         }
     }
 

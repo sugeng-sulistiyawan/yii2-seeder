@@ -99,8 +99,20 @@ class SeederController extends Controller
         $function = $explode[1] ?? null;
 
         if ($name) {
-            $func = $function ?? 'run';
+            $modelClass     = str_replace('/', '\\', $name);
+            $explode        = explode('\\', $modelClass);
+            $modelName      = Inflector::camelize(array_pop($explode));
+            $modelNamespace = implode('\\', $explode);
+
+            $modelClass    = $modelNamespace ? "{$modelNamespace}\\{$modelName}" : $modelName;
+            $func          = $function ?? 'run';
             $seederClasses = [
+                $modelClass,
+                "{$modelClass}TableSeeder",
+                "{$this->seederNamespace}\\{$modelClass}",
+                "{$this->seederNamespace}\\{$modelClass}TableSeeder",
+                "{$this->tableSeederNamespace}\\{$modelClass}",
+                "{$this->tableSeederNamespace}\\{$modelClass}TableSeeder",
                 $name,
                 "{$name}TableSeeder",
                 "{$this->seederNamespace}\\{$name}",
@@ -211,7 +223,7 @@ class SeederController extends Controller
             ]);
             FileHelper::createDirectory($this->tablesPath);
 
-            if (!file_exists($file) || $this->confirm("\n'{$className}' already exists, overwrite?\nAll data will be lost irreversibly!")) {
+            if (!file_exists($file) || $this->confirm("\n'{$file}' already exists, overwrite?\nAll data will be lost irreversibly!")) {
                 file_put_contents($file, $content, LOCK_EX);
                 $this->stdout("New seeder created successfully.\n", Console::FG_GREEN);
             }
@@ -319,20 +331,27 @@ class SeederController extends Controller
             'email'         => 'email',
             'phone'         => 'phoneNumber',
             'hp'            => 'phoneNumber',
+            'start_date'    => 'dateTime()->format("Y-m-d H:i:s")',
+            'end_date'      => 'dateTime()->format("Y-m-d H:i:s")',
+            'created_at'    => 'dateTime()->format("Y-m-d H:i:s")',
+            'updated_at'    => 'dateTime()->format("Y-m-d H:i:s")',
+            'token'         => 'uuid',
+            'duration'      => 'numberBetween()',
+
             'integer'       => 'numberBetween(0, 10)',
             'smallint'      => 'numberBetween(0, 10)',
             'tinyint'       => 'numberBetween(0, 10)',
             'mediumint'     => 'numberBetween(0, 10)',
             'int'           => 'numberBetween(0, 10)',
-            'bigint'        => 'numberBetween(0, 10)',
+            'bigint'        => 'numberBetween()',
             'date'          => 'date()',
-            'datetime'      => 'dateTime()',
-            'timestamp'     => 'dateTime()',
+            'datetime'      => 'dateTime()->format("Y-m-d H:i:s")',
+            'timestamp'     => 'dateTime()->format("Y-m-d H:i:s")',
             'year'          => 'year()',
             'time'          => 'time()',
         ];
 
-        return ArrayHelper::getValue($faker, $key, 'text');
+        return ArrayHelper::getValue($faker, $key, 'word');
     }
 
     /**
