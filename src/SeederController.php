@@ -5,6 +5,7 @@ namespace diecoding\seeder;
 use Yii;
 use yii\console\Controller;
 use yii\console\ExitCode;
+use yii\db\ColumnSchema;
 use yii\helpers\Console;
 use yii\helpers\FileHelper;
 use yii\helpers\Inflector;
@@ -73,19 +74,19 @@ class SeederController extends Controller
     {
         parent::init();
 
-        $this->seederPath         = Yii::getAlias($this->seederPath);
-        $this->tablesPath         = Yii::getAlias($this->tablesPath);
-        $this->templateSeederFile = Yii::getAlias($this->templateSeederFile);
-        $this->templateTableFile  = Yii::getAlias($this->templateTableFile);
+        $this->seederPath         = (string) Yii::getAlias($this->seederPath);
+        $this->tablesPath         = (string) Yii::getAlias($this->tablesPath);
+        $this->templateSeederFile = (string) Yii::getAlias($this->templateSeederFile);
+        $this->templateTableFile  = (string) Yii::getAlias($this->templateTableFile);
     }
 
     /**
      * Seed action
      *
-     * @param string|null $name
+     * @param string $name
      * @return int ExitCode::OK
      */
-    public function actionSeed($name = null)
+    public function actionSeed($name = "")
     {
         if (YII_ENV_PROD && !$this->runOnProd) {
             $this->stdout("YII_ENV is set to 'prod'.\nUse seeder is not possible on production systems. use '--runOnProd' to ignore it.\n");
@@ -114,7 +115,7 @@ class SeederController extends Controller
                     break;
                 }
             }
-        } else if ($defaultSeeder = $this->getDefaultSeeder()) {
+        } else if (($defaultSeeder = $this->getDefaultSeeder()) !== null) {
             $defaultSeeder->run();
         }
 
@@ -225,7 +226,7 @@ class SeederController extends Controller
     /**
      * @param string $path
      * @param string $eol
-     * @return \stdClass|\yii\db\ActiveRecord|null
+     * @return \yii\db\ActiveRecord|null
      */
     protected function getClass($path, $eol = PHP_EOL)
     {
@@ -242,7 +243,7 @@ class SeederController extends Controller
      *
      * @return object
      */
-    public function generateFields()
+    protected function generateFields()
     {
         $modelClass     = $this->model::class;
         $modelNamespace = str_replace('/', '\\', StringHelper::dirname($modelClass));
@@ -263,81 +264,22 @@ class SeederController extends Controller
             $foreignKeys[$column] = $model;
         }
 
-        /** @var \yii\db\ColumnSchema $data */
         foreach ($columns as $column => $data) {
+            /** @var ColumnSchema $data */
             if ($data->autoIncrement) {
                 continue;
             }
 
-            $foreign      = null;
-            $ref_table_id = null;
-            $faker        = null;
+            $foreign = $ref_table_id = $faker = null;
 
             if (isset($foreignKeys[$column])) {
                 $foreign      = $foreignKeys[$column];
                 $ref_table_id = $foreign->tableSchema->primaryKey[0];
             }
 
-            switch ($data->name) {
-                case 'full_name':
-                case 'name':
-                    $faker = 'name';
-                    break;
-                case 'short_name':
-                case 'first_name':
-                case 'nickname':
-                    $faker = 'firstName';
-                    break;
-                case 'last_name':
-                    $faker = 'lastName';
-                    break;
-                case 'description':
-                    $faker = 'realText()';
-                    break;
-                case 'company':
-                case 'business_name':
-                    $faker = 'company';
-                    break;
-                case 'email':
-                    $faker = 'email';
-                    break;
-                case 'phone':
-                case 'hp':
-                    $faker = 'phoneNumber';
-                    break;
-            }
-
-            if (!$faker) {
-                switch ($data->type) {
-                    case 'integer':
-                    case 'smallint':
-                    case 'tinyint':
-                        $faker = 'numberBetween(0, 10)';
-                        if ($data->dbType === 'tinyint(1)') {
-                            $faker = 'boolean';
-                            break;
-                        }
-                    case 'mediumint':
-                    case 'int':
-                    case 'bigint':
-                        $faker = 'numberBetween(0, 10)';
-                        break;
-                    case 'date':
-                        $faker = 'date()';
-                        break;
-                    case 'datetime':
-                    case 'timestamp':
-                        $faker = 'dateTime()';
-                        break;
-                    case 'year':
-                        $faker = 'year()';
-                        break;
-                    case 'time':
-                        $faker = 'time()';
-                        break;
-                    default:
-                        $faker = 'text';
-                }
+            $faker = $this->generateFakerName($data);
+            if (empty($faker)) {
+                $faker = $this->generateFakerType($data);
             }
 
             $fields[$column] = (object) [
@@ -348,6 +290,88 @@ class SeederController extends Controller
         }
 
         return (object) $fields;
+    }
+
+    /**
+     * Generate Faker Field Name
+     *
+     * @param ColumnSchema $data
+     * @return string
+     */
+    protected function generateFakerName(ColumnSchema $data)
+    {
+        switch ($data->name) {
+            case 'full_name':
+            case 'name':
+                $faker = 'name';
+                break;
+            case 'short_name':
+            case 'first_name':
+            case 'nickname':
+                $faker = 'firstName';
+                break;
+            case 'last_name':
+                $faker = 'lastName';
+                break;
+            case 'description':
+                $faker = 'realText()';
+                break;
+            case 'company':
+            case 'business_name':
+                $faker = 'company';
+                break;
+            case 'email':
+                $faker = 'email';
+                break;
+            case 'phone':
+            case 'hp':
+                $faker = 'phoneNumber';
+                break;
+        }
+
+        return $faker;
+    }
+
+    /**
+     * Generate Faker Field Type
+     *
+     * @param ColumnSchema $data
+     * @return string
+     */
+    protected function generateFakerType(ColumnSchema $data)
+    {
+        switch ($data->type) {
+            case 'integer':
+            case 'smallint':
+            case 'tinyint':
+                $faker = 'numberBetween(0, 10)';
+                if ($data->dbType === 'tinyint(1)') {
+                    $faker = 'boolean';
+                    break;
+                }
+            case 'mediumint':
+            case 'int':
+            case 'bigint':
+                $faker = 'numberBetween(0, 10)';
+                break;
+            case 'date':
+                $faker = 'date()';
+                break;
+            case 'datetime':
+            case 'timestamp':
+                $faker = 'dateTime()';
+                break;
+            case 'year':
+                $faker = 'year()';
+                break;
+            case 'time':
+                $faker = 'time()';
+                break;
+            default:
+                $faker = 'text';
+        }
+
+        return $faker;
     }
 
     /**
@@ -372,6 +396,7 @@ class SeederController extends Controller
         }
 
         if ($defaultSeederClass instanceof TableSeeder) {
+            /** @var TableSeeder $defaultSeederClass */
             return new $defaultSeederClass;
         }
 
