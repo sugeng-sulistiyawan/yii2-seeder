@@ -111,8 +111,6 @@ abstract class TableSeeder extends Migration
     {
         $columnNames = $this->db->getTableSchema($table)->columnNames;
 
-        $this->generate();
-
         if (!array_key_exists('created_at', $columns) && in_array('created_at', $columnNames, true)) {
             $columns['created_at'] = $this->createdAt;
         }
@@ -139,8 +137,6 @@ abstract class TableSeeder extends Migration
     public function batchInsert($table, $columns, $rows)
     {
         $columnNames = $this->db->getTableSchema($table)->columnNames;
-
-        $this->generate();
 
         if (!in_array('created_at', $columns, true) && in_array('created_at', $columnNames, true)) {
             $columns[] = 'created_at';
