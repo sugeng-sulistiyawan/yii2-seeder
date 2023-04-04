@@ -122,7 +122,7 @@ or add to the require section of your `composer.json` file.
   - full path / class name (e.g `yii seeder console\seeder\tables\UserTableSeeder` for `UserTableSeeder`)
   - without TableSeeder (e.g `yii seeder user` for `UserTableSeeder`)
   - with TableSeeder (e.g `yii seeder userTableSeeder` for `UserTableSeeder`)
-  - @see https://github.com/sugeng-sulistiyawan/yii2-seeder/blob/main/src/SeederController.php#L103 for more usage
+  - @see https://github.com/sugeng-sulistiyawan/yii2-seeder/blob/main/src/SeederController.php#L109 for more usage
 
 `yii seeder/create [model_name]` Create a TableSeeder in `console\seeder\tables\ModelNameTableSeeder`
 - `model_name`
