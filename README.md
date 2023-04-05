@@ -2,13 +2,13 @@
 
 Create fast-fill database with fake data or bulk data for Yii2.
 
-[![Latest Stable Version](http://poser.pugx.org/diecoding/yii2-seeder/v)](https://packagist.org/packages/diecoding/yii2-seeder)
-[![Total Downloads](http://poser.pugx.org/diecoding/yii2-seeder/downloads)](https://packagist.org/packages/diecoding/yii2-seeder)
-[![Quality Score](https://img.shields.io/scrutinizer/g/sugeng-sulistiyawan/yii2-seeder.svg)](https://scrutinizer-ci.com/g/sugeng-sulistiyawan/yii2-seeder)
-[![Build Status](https://app.travis-ci.com/sugeng-sulistiyawan/yii2-seeder.svg?branch=master)](https://app.travis-ci.com/sugeng-sulistiyawan/yii2-seeder)
-[![Latest Unstable Version](http://poser.pugx.org/diecoding/yii2-seeder/v/unstable)](https://packagist.org/packages/diecoding/yii2-seeder)
-[![License](http://poser.pugx.org/diecoding/yii2-seeder/license)](https://packagist.org/packages/diecoding/yii2-seeder)
-[![PHP Version Require](http://poser.pugx.org/diecoding/yii2-seeder/require/php)](https://packagist.org/packages/diecoding/yii2-seeder)
+[![Latest Stable Version](https://img.shields.io/packagist/v/diecoding/yii2-seeder?label=stable)](https://packagist.org/packages/diecoding/yii2-seeder)
+[![Total Downloads](https://img.shields.io/packagist/dt/diecoding/yii2-seeder)](https://packagist.org/packages/diecoding/yii2-seeder)
+[![Latest Stable Release Date](https://img.shields.io/github/release-date/sugeng-sulistiyawan/yii2-seeder)](https://github.com/sugeng-sulistiyawan/yii2-seeder)
+[![Quality Score](https://img.shields.io/scrutinizer/quality/g/sugeng-sulistiyawan/yii2-seeder)](https://scrutinizer-ci.com/g/sugeng-sulistiyawan/yii2-seeder)
+[![Build Status](https://img.shields.io/travis/com/sugeng-sulistiyawan/yii2-seeder)](https://app.travis-ci.com/sugeng-sulistiyawan/yii2-seeder)
+[![License](https://img.shields.io/github/license/sugeng-sulistiyawan/yii2-seeder)](https://github.com/sugeng-sulistiyawan/yii2-seeder)
+[![PHP Version Require](https://img.shields.io/packagist/dependency-v/diecoding/yii2-seeder/php?color=6f73a6)](https://packagist.org/packages/diecoding/yii2-seeder)
 
 ## Table of Contents
 
@@ -27,8 +27,7 @@ Create fast-fill database with fake data or bulk data for Yii2.
 
 ## Instalation
 
-Package is available on [Packagist](https://packagist.org/packages/diecoding/yii2-seeder), 
-you can install it using [Composer](https://getcomposer.org).
+Package is available on [Packagist](https://packagist.org/packages/diecoding/yii2-seeder), you can install it using [Composer](https://getcomposer.org).
 
 ```shell
 composer require diecoding/yii2-seeder "@dev"

@@ -121,15 +121,7 @@ class SeederController extends Controller
                 "{$this->tableSeederNamespace}\\{$name}TableSeeder",
             ];
 
-            $count = 0;
-            foreach ($seederClasses as $seederClass) {
-                if ($seeder = $this->getClass($seederClass)) {
-                    $seeder->{$func}();
-                    $count++;
-                    break;
-                }
-            }
-            $this->printError("Class {$name} not exists.\n", $count === 0);
+            $this->runMethod($seederClasses, $func, $name);
         } else if (($defaultSeeder = $this->getDefaultSeeder()) !== null) {
             $defaultSeeder->run();
         }
@@ -381,5 +373,27 @@ class SeederController extends Controller
         }
 
         return null;
+    }
+
+    /**
+     * Execute function
+     *
+     * @param array|string $class
+     * @param string $method
+     * @param string|null $defaultClass
+     * @return void
+     */
+    protected function runMethod($class, $method = 'run', $defaultClass = null)
+    {
+        $count = 0;
+        foreach ((array) $class as $seederClass) {
+            if ($seeder = $this->getClass($seederClass)) {
+                $seeder->{$method}();
+                $count++;
+                break;
+            }
+        }
+        $defaultClass = $defaultClass ?? $class[0];
+        $this->printError("Class {$class[0]} not exists.\n", $count === 0);
     }
 }
