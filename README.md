@@ -30,13 +30,13 @@ Create fast-fill database with fake data or bulk data for Yii2.
 Package is available on [Packagist](https://packagist.org/packages/diecoding/yii2-seeder), you can install it using [Composer](https://getcomposer.org).
 
 ```shell
-composer require diecoding/yii2-seeder "@dev"
+composer require diecoding/yii2-seeder "^1.0"
 ```
 
 or add to the require section of your `composer.json` file.
 
 ```
-"diecoding/yii2-seeder": "@dev"
+"diecoding/yii2-seeder": "^1.0"
 ```
 
 ## Dependencies
