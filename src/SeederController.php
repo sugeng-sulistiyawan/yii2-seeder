@@ -394,6 +394,6 @@ class SeederController extends Controller
             }
         }
         $defaultClass = $defaultClass ?? $class[0];
-        $this->printError("Class {$class[0]} not exists.\n", $count === 0);
+        $this->printError("Class {$defaultClass} not exists.\n", $count === 0);
     }
 }
