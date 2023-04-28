@@ -35,7 +35,7 @@ composer require diecoding/yii2-seeder "^1.0"
 
 or add to the require section of your `composer.json` file.
 
-```
+```shell
 "diecoding/yii2-seeder": "^1.0"
 ```
 
@@ -117,18 +117,22 @@ or add to the require section of your `composer.json` file.
 `yii seeder [name]` Seed a table
 
 `yii seeder [name]:[funtion_name]` Seed a table and run a specific function from selected TableSeeder
-- `name` 
+
+- `name`
+
   - full path / class name (e.g `yii seeder console\seeder\tables\UserTableSeeder` for `UserTableSeeder`)
   - without TableSeeder (e.g `yii seeder user` for `UserTableSeeder`)
   - with TableSeeder (e.g `yii seeder userTableSeeder` for `UserTableSeeder`)
   - @see https://github.com/sugeng-sulistiyawan/yii2-seeder/blob/main/src/SeederController.php#L109 for more usage
 
 `yii seeder/create [model_name]` Create a TableSeeder in `console\seeder\tables\ModelNameTableSeeder`
+
 - `model_name`
-    - `yii seeder/create model_name`
-    - `yii seeder/create model-name`
-    - `yii seeder/create full\path\Class`
-    - @see https://www.yiiframework.com/doc/api/2.0/yii-helpers-inflector#camelize()-detail for handle `[model_name]` options
+
+  - `yii seeder/create model_name`
+  - `yii seeder/create model-name`
+  - `yii seeder/create full\path\Class`
+  - @see https://www.yiiframework.com/doc/api/2.0/yii-helpers-inflector#camelize()-detail for handle `[model_name]` options
 
 > For seeder, if the model is not at the root of the `common/models`, just add the folder where the model is located inside the `common/models` directory. You can configure with `$modelNamespace` config in console\config.
 
@@ -252,8 +256,6 @@ class Seeder extends TableSeeder
 }
 ```
 
-## License
+---
 
-Yii2 Seeder is licensed under the MIT License.
-
-See the [LICENSE](LICENSE) file for more information.
+Read more docs: https://sugengsulistiyawan.my.id/docs/opensource/yii2/seeder/
