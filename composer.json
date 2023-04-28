@@ -7,7 +7,7 @@
 			"email": "sugeng.sulistiyawan@gmail.com"
 		}
 	],
-	"type": "yii2-extension",
+	"type": "library",
 	"keywords": [
 		"yii2",
 		"extension",
