@@ -23,7 +23,6 @@ Create fast-fill database with fake data or bulk data for Yii2.
     - [Commands](#commands)
     - [Example](#example)
     - [Seeder](#seeder)
-  - [License](#license)
 
 ## Instalation
 
