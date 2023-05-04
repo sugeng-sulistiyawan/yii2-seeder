@@ -80,10 +80,6 @@ abstract class TableSeeder extends Migration
 
     /**
      * @return void
-     */
-    abstract function run();
-
-    /**
      * @throws Exception
      * @throws NotSupportedException
      */
@@ -93,6 +89,7 @@ abstract class TableSeeder extends Migration
     }
 
     /**
+     * @return void
      * @throws Exception
      * @throws NotSupportedException
      */
@@ -137,6 +134,19 @@ abstract class TableSeeder extends Migration
     }
 
     /**
+     * @return static
+     */
+    public static function create()
+    {
+        return new static;
+    }
+
+    /**
+     * @return void
+     */
+    abstract public function run();
+
+    /**
      * Check missing column
      *
      * @param array $insertedColumns
@@ -170,13 +180,5 @@ abstract class TableSeeder extends Migration
             }
             echo "    > #" . str_pad('', 70, '#') . "#\n";
         }
-    }
-
-    /**
-     * @return static
-     */
-    public static function create()
-    {
-        return new static;
     }
 }

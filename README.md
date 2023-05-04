@@ -161,7 +161,12 @@ class UserTableSeeder extends TableSeeder
     // public $truncateTable = false;
     // public $locale = 'en_US';
 
-    function run()
+    /**
+     * Default execution
+     *
+     * @return void
+     */
+    public function run()
     {
         $province = Province::find()->all();
 
