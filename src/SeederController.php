@@ -182,18 +182,7 @@ class SeederController extends Controller
         $this->model = $this->getClass($modelName);
         if ($this->model === null) {
             $modelNamespace = $this->modelNamespace;
-            $file           = "{$modelNamespace}\\{$modelName}";
-            if (strpos($modelName, '\\')) {
-                $explode         = explode('\\', $modelName);
-                $modelName       = array_pop($explode);
-                $modelNamespace .= '\\' . implode('\\', $explode);
-
-                $file = "{$modelNamespace}\\{$modelName}";
-            }
-            if (!class_exists($file)) {
-                $modelName = Inflector::camelize($modelName);
-                $file      = "{$modelNamespace}\\{$modelName}";
-            }
+            $file           = $this->normalizeFile($modelNamespace, $modelName);
 
             $this->model = $this->getClass($file);
             if ($this->model === null) {
@@ -395,5 +384,28 @@ class SeederController extends Controller
         }
         $defaultClass = $defaultClass ?? $class[0];
         $this->printError("Class {$defaultClass} not exists.\n", $count === 0);
+    }
+
+    /**
+     * @param string $modelNamespace
+     * @param string $modelName
+     * @return string
+     */
+    private function normalizeFile($modelNamespace, $modelName)
+    {
+        $file = "{$modelNamespace}\\{$modelName}";
+        if (strpos($modelName, '\\') !== false) {
+            $explode         = explode('\\', $modelName);
+            $modelName       = array_pop($explode);
+            $modelNamespace .= '\\' . implode('\\', $explode);
+
+            $file = "{$modelNamespace}\\{$modelName}";
+        }
+        if (!class_exists($file)) {
+            $modelName = Inflector::camelize($modelName);
+            $file      = "{$modelNamespace}\\{$modelName}";
+        }
+
+        return $file;
     }
 }
