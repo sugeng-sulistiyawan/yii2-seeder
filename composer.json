@@ -1,12 +1,7 @@
 {
 	"name": "diecoding/yii2-seeder",
 	"description": "Create fast-fill database with fake data or bulk data for Yii2",
-	"authors": [
-		{
-			"name": "Sugeng Sulistiyawan",
-			"email": "sugeng.sulistiyawan@gmail.com"
-		}
-	],
+	"version": "v1.0.4",
 	"type": "library",
 	"keywords": [
 		"yii2",
@@ -15,11 +10,24 @@
 		"seeder",
 		"faker"
 	],
+	"homepage": "https://github.com/sugeng-sulistiyawan/yii2-seeder",
 	"license": "MIT",
+	"authors": [
+		{
+			"name": "Sugeng Sulistiyawan",
+			"email": "sugeng.sulistiyawan@gmail.com"
+		}
+	],
 	"support": {
 		"issues": "https://github.com/sugeng-sulistiyawan/yii2-seeder/issues",
 		"source": "https://github.com/sugeng-sulistiyawan/yii2-seeder"
 	},
+	"funding": [
+		{
+			"type": "github",
+			"url": "https://github.com/sponsors/sugeng-sulistiyawan"
+		}
+	],
 	"require": {
 		"php": ">=7.4.0",
 		"yiisoft/yii2": "~2.0",
@@ -47,6 +55,7 @@
     "config": {
         "allow-plugins": {
             "yiisoft/yii2-composer": true
-        }
+        },
+        "sort-packages": true
     }
 }
