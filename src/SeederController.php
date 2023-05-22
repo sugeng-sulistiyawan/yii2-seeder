@@ -49,10 +49,10 @@ class SeederController extends Controller
     public $modelNamespace = 'common\models';
 
     /** @var string path view template table seeder, support path alias */
-    public $templateSeederFile = '@vendor/diecoding/yii2-seeder/views/Seeder.php';
+    public $templateSeederFile = '@vendor/diecoding/yii2-seeder/src/views/Seeder.php';
 
     /** @var string path view template seeder, support path alias */
-    public $templateTableFile = '@vendor/diecoding/yii2-seeder/views/TableSeeder.php';
+    public $templateTableFile = '@vendor/diecoding/yii2-seeder/src/views/TableSeeder.php';
 
     /** @var bool run on production or Seeder on YII_ENV === 'prod' */
     public $runOnProd;

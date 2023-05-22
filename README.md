@@ -99,10 +99,10 @@ or add to the require section of your `composer.json` file.
         'modelNamespace' => 'common\models',
 
         /** @var string path view template table seeder, support path alias */
-        'templateSeederFile' => '@vendor/diecoding/yii2-seeder/views/Seeder.php';
+        'templateSeederFile' => '@vendor/diecoding/yii2-seeder/src/views/Seeder.php';
 
         /** @var string path view template seeder, support path alias */
-        'templateTableFile' => '@vendor/diecoding/yii2-seeder/views/TableSeeder.php';
+        'templateTableFile' => '@vendor/diecoding/yii2-seeder/src/views/TableSeeder.php';
     ],
     // ...
 ],
