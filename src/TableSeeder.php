@@ -72,7 +72,7 @@ abstract class TableSeeder extends Migration
                 $total += count($rows);
                 parent::batchInsert($table, explode(',', $columns), $rows);
             }
-            echo "      $total row" . ($total > 1 ? 's' : null) . " inserted  in $table" . "\n";
+            echo "      $total row" . ($total > 1 ? 's' : null) . " inserted in $table" . "\n";
         }
 
         $this->checkMissingColumns($this->insertedColumns);
