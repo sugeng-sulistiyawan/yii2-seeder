@@ -108,15 +108,17 @@ class SeederController extends Controller
             $func          = $function ?? 'run';
             $seederClasses = [
                 $modelClass,
-                "{$modelClass}TableSeeder",
+                "{$modelClass}Seeder",
                 "{$this->seederNamespace}\\{$modelClass}",
-                "{$this->seederNamespace}\\{$modelClass}TableSeeder",
+                "{$this->seederNamespace}\\{$modelClass}Seeder",
+                "{$modelClass}TableSeeder",
                 "{$this->tableSeederNamespace}\\{$modelClass}",
                 "{$this->tableSeederNamespace}\\{$modelClass}TableSeeder",
                 $name,
-                "{$name}TableSeeder",
+                "{$name}Seeder",
                 "{$this->seederNamespace}\\{$name}",
-                "{$this->seederNamespace}\\{$name}TableSeeder",
+                "{$this->seederNamespace}\\{$name}Seeder",
+                "{$name}TableSeeder",
                 "{$this->tableSeederNamespace}\\{$name}",
                 "{$this->tableSeederNamespace}\\{$name}TableSeeder",
             ];
@@ -192,7 +194,7 @@ class SeederController extends Controller
             }
         }
 
-        $modelClass = $this->model::class;
+        $modelClass = get_class($this->model);
         $className  = StringHelper::basename($modelClass) . 'TableSeeder';
         $file       = "{$this->tablesPath}/{$className}.php";
         if ($this->confirm("Create new seeder '{$file}'?")) {
