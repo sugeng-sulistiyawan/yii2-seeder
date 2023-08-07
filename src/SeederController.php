@@ -247,7 +247,7 @@ class SeederController extends Controller
      */
     protected function generateFields()
     {
-        $modelClass     = $this->model::class;
+        $modelClass     = get_class($this->model);
         $modelNamespace = str_replace('/', '\\', StringHelper::dirname($modelClass));
 
         $schema      = $this->model->tableSchema;
