@@ -1,7 +1,6 @@
 {
 	"name": "diecoding/yii2-seeder",
 	"description": "Create fast-fill database with fake data or bulk data for Yii2",
-	"version": "v1.0.4",
 	"type": "library",
 	"keywords": [
 		"yii2",
