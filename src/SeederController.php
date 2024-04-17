@@ -30,7 +30,7 @@ class SeederController extends Controller
     public $seederPath = '@console/seeder';
 
     /** @var string seeder namespace */
-    public $seederNamespace = 'console\seeder';
+    public $seederNamespace = "console\\seeder";
 
     /** 
      * @var string this class look like `$this->seederNamespace\Seeder` 
@@ -43,10 +43,10 @@ class SeederController extends Controller
     public $tablesPath = '@console/seeder/tables';
 
     /** @var string seeder table namespace */
-    public $tableSeederNamespace = 'console\seeder\tables';
+    public $tableSeederNamespace = "console\\seeder\\tables";
 
     /** @var string model namespace */
-    public $modelNamespace = 'common\models';
+    public $modelNamespace = "common\\models";
 
     /** @var string path view template table seeder, support path alias */
     public $templateSeederFile = __DIR__ . '/views/Seeder.php';
@@ -166,11 +166,11 @@ class SeederController extends Controller
      * or you can use full path of your class name
      * 
      * ```shell
-     * yii seeder/create \app\models\User
+     * yii seeder/create \\app\\models\\User
      * ```
      * or
      * ```shell
-     * yii seeder/create \backend\modules\example\models\User
+     * yii seeder/create \\backend\\modules\\example\\models\\User
      * ```
      *
      * @param string $modelName the name of the new seeder or class
