@@ -75,10 +75,10 @@ class SeederController extends Controller
     {
         parent::init();
 
-        $this->seederPath         = (string) Yii::getAlias($this->seederPath);
-        $this->tablesPath         = (string) Yii::getAlias($this->tablesPath);
+        $this->seederPath = (string) Yii::getAlias($this->seederPath);
+        $this->tablesPath = (string) Yii::getAlias($this->tablesPath);
         $this->templateSeederFile = (string) Yii::getAlias($this->templateSeederFile);
-        $this->templateTableFile  = (string) Yii::getAlias($this->templateTableFile);
+        $this->templateTableFile = (string) Yii::getAlias($this->templateTableFile);
     }
 
     /**
@@ -94,18 +94,18 @@ class SeederController extends Controller
             return ExitCode::OK;
         }
 
-        $explode  = explode(':', $name);
-        $name     = $explode[0];
+        $explode = explode(':', $name);
+        $name = $explode[0];
         $function = $explode[1] ?? null;
 
         if ($name) {
-            $modelClass     = str_replace('/', '\\', $name);
-            $explode        = explode('\\', $modelClass);
-            $modelName      = Inflector::camelize(array_pop($explode));
+            $modelClass = str_replace('/', '\\', $name);
+            $explode = explode('\\', $modelClass);
+            $modelName = Inflector::camelize(array_pop($explode));
             $modelNamespace = implode('\\', $explode);
 
-            $modelClass    = $modelNamespace ? "{$modelNamespace}\\{$modelName}" : $modelName;
-            $func          = $function ?? 'run';
+            $modelClass = $modelNamespace ? "{$modelNamespace}\\{$modelName}" : $modelName;
+            $func = $function ?? 'run';
             $seederClasses = [
                 $modelClass,
                 "{$modelClass}Seeder",
@@ -184,7 +184,7 @@ class SeederController extends Controller
         $this->model = $this->getClass($modelName);
         if ($this->model === null) {
             $modelNamespace = $this->modelNamespace;
-            $file           = $this->normalizeFile($modelNamespace, $modelName);
+            $file = $this->normalizeFile($modelNamespace, $modelName);
 
             $this->model = $this->getClass($file);
             if ($this->model === null) {
@@ -195,14 +195,14 @@ class SeederController extends Controller
         }
 
         $modelClass = get_class($this->model);
-        $className  = StringHelper::basename($modelClass) . 'TableSeeder';
-        $file       = "{$this->tablesPath}/{$className}.php";
+        $className = StringHelper::basename($modelClass) . 'TableSeeder';
+        $file = "{$this->tablesPath}/{$className}.php";
         if ($this->confirm("Create new seeder '{$file}'?")) {
             $content = $this->renderFile($this->templateTableFile, [
                 'className' => $className,
                 'namespace' => $this->tableSeederNamespace,
-                'model'     => $this->model,
-                'fields'    => $this->generateFields(),
+                'model' => $this->model,
+                'fields' => $this->generateFields(),
             ]);
             FileHelper::createDirectory($this->tablesPath);
 
@@ -247,17 +247,17 @@ class SeederController extends Controller
      */
     protected function generateFields()
     {
-        $modelClass     = get_class($this->model);
+        $modelClass = get_class($this->model);
         $modelNamespace = str_replace('/', '\\', StringHelper::dirname($modelClass));
 
-        $schema      = $this->model->tableSchema;
-        $columns     = $schema->columns;
+        $schema = $this->model->tableSchema;
+        $columns = $schema->columns;
         $foreignKeys = $schema->foreignKeys;
-        $fields      = [];
+        $fields = [];
 
         foreach ($foreignKeys as $fk_str => $foreignKey) {
             unset($foreignKeys[$fk_str]);
-            $table  = array_shift($foreignKey);
+            $table = array_shift($foreignKey);
             $column = array_keys($foreignKey)[0];
 
             $model = $this->getClass(($class = $modelNamespace . '\\' . Inflector::camelize($table)));
@@ -274,7 +274,7 @@ class SeederController extends Controller
 
             $foreign = $ref_table_id = null;
             if (isset($foreignKeys[$column])) {
-                $foreign      = $foreignKeys[$column];
+                $foreign = $foreignKeys[$column];
                 $ref_table_id = $foreign->tableSchema->primaryKey[0];
             }
 
@@ -284,8 +284,8 @@ class SeederController extends Controller
             }
 
             $fields[$column] = (object) [
-                'faker'        => $faker,
-                'foreign'      => $foreign,
+                'faker' => $faker,
+                'foreign' => $foreign,
                 'ref_table_id' => $ref_table_id
             ];
         }
@@ -302,36 +302,36 @@ class SeederController extends Controller
     protected function generateFakerField($key)
     {
         $faker = [
-            'full_name'     => 'name',
-            'name'          => 'name',
-            'short_name'    => 'firstName',
-            'first_name'    => 'firstName',
-            'nickname'      => 'firstName',
-            'last_name'     => 'lastName',
-            'description'   => 'realText()',
-            'company'       => 'company',
+            'full_name' => 'name',
+            'name' => 'name',
+            'short_name' => 'firstName',
+            'first_name' => 'firstName',
+            'nickname' => 'firstName',
+            'last_name' => 'lastName',
+            'description' => 'realText()',
+            'company' => 'company',
             'business_name' => 'company',
-            'email'         => 'email',
-            'phone'         => 'phoneNumber',
-            'hp'            => 'phoneNumber',
-            'start_date'    => 'dateTime()->format("Y-m-d H:i:s")',
-            'end_date'      => 'dateTime()->format("Y-m-d H:i:s")',
-            'created_at'    => 'dateTime()->format("Y-m-d H:i:s")',
-            'updated_at'    => 'dateTime()->format("Y-m-d H:i:s")',
-            'token'         => 'uuid',
-            'duration'      => 'numberBetween()',
+            'email' => 'email',
+            'phone' => 'phoneNumber',
+            'hp' => 'phoneNumber',
+            'start_date' => 'dateTime()->format("Y-m-d H:i:s")',
+            'end_date' => 'dateTime()->format("Y-m-d H:i:s")',
+            'created_at' => 'dateTime()->format("Y-m-d H:i:s")',
+            'updated_at' => 'dateTime()->format("Y-m-d H:i:s")',
+            'token' => 'uuid',
+            'duration' => 'numberBetween()',
 
-            'integer'       => 'numberBetween(0, 10)',
-            'smallint'      => 'numberBetween(0, 10)',
-            'tinyint'       => 'numberBetween(0, 10)',
-            'mediumint'     => 'numberBetween(0, 10)',
-            'int'           => 'numberBetween(0, 10)',
-            'bigint'        => 'numberBetween()',
-            'date'          => 'date()',
-            'datetime'      => 'dateTime()->format("Y-m-d H:i:s")',
-            'timestamp'     => 'dateTime()->format("Y-m-d H:i:s")',
-            'year'          => 'year()',
-            'time'          => 'time()',
+            'integer' => 'numberBetween(0, 10)',
+            'smallint' => 'numberBetween(0, 10)',
+            'tinyint' => 'numberBetween(0, 10)',
+            'mediumint' => 'numberBetween(0, 10)',
+            'int' => 'numberBetween(0, 10)',
+            'bigint' => 'numberBetween()',
+            'date' => 'date()',
+            'datetime' => 'dateTime()->format("Y-m-d H:i:s")',
+            'timestamp' => 'dateTime()->format("Y-m-d H:i:s")',
+            'year' => 'year()',
+            'time' => 'time()',
         ];
 
         return ArrayHelper::getValue($faker, $key, 'word');
@@ -345,7 +345,7 @@ class SeederController extends Controller
     protected function getDefaultSeeder()
     {
         $defaultSeederClass = "{$this->seederNamespace}\\{$this->defaultSeederClass}";
-        $defaultSeederFile  = str_replace('\\', DIRECTORY_SEPARATOR, "{$defaultSeederClass}.php");
+        $defaultSeederFile = str_replace('\\', DIRECTORY_SEPARATOR, "{$defaultSeederClass}.php");
 
         if (!class_exists($defaultSeederClass) || !file_exists($defaultSeederFile)) {
             FileHelper::createDirectory($this->seederPath);
@@ -397,15 +397,15 @@ class SeederController extends Controller
     {
         $file = "{$modelNamespace}\\{$modelName}";
         if (strpos($modelName, '\\') !== false) {
-            $explode         = explode('\\', $modelName);
-            $modelName       = array_pop($explode);
+            $explode = explode('\\', $modelName);
+            $modelName = array_pop($explode);
             $modelNamespace .= '\\' . implode('\\', $explode);
 
             $file = "{$modelNamespace}\\{$modelName}";
         }
         if (!class_exists($file)) {
             $modelName = Inflector::camelize($modelName);
-            $file      = "{$modelNamespace}\\{$modelName}";
+            $file = "{$modelNamespace}\\{$modelName}";
         }
 
         return $file;
