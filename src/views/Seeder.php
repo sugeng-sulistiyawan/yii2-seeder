@@ -4,7 +4,6 @@
 
 echo "<?php\n";
 ?>
-
 namespace <?= $namespace ?>;
 
 use diecoding\seeder\TableSeeder;

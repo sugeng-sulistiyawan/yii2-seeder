@@ -40,5 +40,3 @@ phpunit.phar
 # PHP CS Fixer
 .php_cs.cache
 .php-cs-fixer.cache
-
-/.vscode
