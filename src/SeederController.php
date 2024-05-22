@@ -6,6 +6,7 @@ use Yii;
 use yii\console\Controller;
 use yii\console\ExitCode;
 use yii\db\ColumnSchema;
+use yii\db\Schema;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Console;
 use yii\helpers\FileHelper;
@@ -278,7 +279,7 @@ class SeederController extends Controller
                 $ref_table_id = $foreign->tableSchema->primaryKey[0];
             }
 
-            $faker = $this->generateFakerField($data->name) ?? $this->generateFakerField($data->type);
+            $faker = $this->generateFakerField($data->name, $data->type) ?? $this->generateFakerField($data->type);
             if ($data->dbType === 'tinyint(1)') {
                 $faker = 'boolean';
             }
@@ -297,9 +298,10 @@ class SeederController extends Controller
      * Generate Faker Field Name
      *
      * @param string $key
+     * @param string|null $dataType The data type of the column schema
      * @return string
      */
-    protected function generateFakerField($key)
+    protected function generateFakerField($key, $dataType = null)
     {
         $faker = [
             'full_name' => 'name',
@@ -316,8 +318,8 @@ class SeederController extends Controller
             'hp' => 'phoneNumber',
             'start_date' => 'dateTime()->format("Y-m-d H:i:s")',
             'end_date' => 'dateTime()->format("Y-m-d H:i:s")',
-            'created_at' => 'dateTime()->format("Y-m-d H:i:s")',
-            'updated_at' => 'dateTime()->format("Y-m-d H:i:s")',
+            'created_at' => $dataType === Schema::TYPE_INTEGER ? 'dateTime()->getTimestamp()' : 'dateTime()->format("Y-m-d H:i:s")',
+            'updated_at' => $dataType === Schema::TYPE_INTEGER ? 'dateTime()->getTimestamp()' : 'dateTime()->format("Y-m-d H:i:s")',
             'token' => 'uuid',
             'duration' => 'numberBetween()',
 
