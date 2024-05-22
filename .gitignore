@@ -42,3 +42,4 @@ phpunit.phar
 .php-cs-fixer.cache
 
 /.vscode
+/.idea
