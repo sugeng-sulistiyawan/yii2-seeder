@@ -347,7 +347,7 @@ class SeederController extends Controller
     protected function getDefaultSeeder()
     {
         $defaultSeederClass = "{$this->seederNamespace}\\{$this->defaultSeederClass}";
-        $defaultSeederFile = "{$this->seederPath}/{$defaultSeederClass}.php";
+        $defaultSeederFile = "{$this->seederPath}/{$this->defaultSeederClass}.php";
 
         if (!class_exists($defaultSeederClass) || !file_exists($defaultSeederFile)) {
             FileHelper::createDirectory($this->seederPath);
